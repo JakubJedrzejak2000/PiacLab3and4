@@ -42,7 +42,8 @@ def not_found_error(error):
 def form():
     nickname = request.form.get("nickname")
     email = request.form.get("email")
-    text = "From:<pythoncloudjakub@gmail.com>\nTo:<"+str(email)+">\nSubject:Wiadomosc\nWitaj "+ str(nickname) +"~!\nTwoja wlasna wiadomosc!\n" + request.form.get("text")
+    text = "From:<pythoncloudjakub@gmail.com>\nTo:<" + str(email) + ">\nSubject:Wiadomosc\nWitaj " + str(
+        nickname) + "~!\nTwoja wlasna wiadomosc!\n" + request.form.get("text")
     print(text)
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
