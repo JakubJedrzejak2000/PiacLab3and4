@@ -38,9 +38,6 @@ def not_found_error(error):
     return render_template('404.html'), 404
 
 
-keyring.set_password("test", "pythoncloudjakub@gmail.com", "P4SSW0rd123")
-
-
 @app.route('/contact', methods=['GET', 'POST'])
 def form():
     nickname = request.form.get("nickname")
