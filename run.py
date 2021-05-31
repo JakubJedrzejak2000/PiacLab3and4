@@ -1,4 +1,3 @@
-import azure as azure
 from flask import Flask, render_template, url_for, abort, make_response, request
 import smtplib
 import keyring
