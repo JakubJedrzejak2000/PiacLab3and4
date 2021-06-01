@@ -1,3 +1,5 @@
+import sys
+
 from flask import Flask, render_template, url_for, abort, make_response, request
 import keyring
 from flask_mail import Mail, Message
@@ -47,13 +49,16 @@ def not_found_error(error):
 
 @app.route('/contact', methods=['POST'])
 def form():
-    nickname = request.form.get("nickname")
-    email = request.form.get("email")
-    text = request.form.get("text")
-    msg = Message(nickname, sender='pythoncloudjakub@gmail.com', recipients=[email])
-    msg.body = text
-    mail.send(msg)
-    return render_template('contact.html')
+    try:
+        nickname = request.form.get("nickname")
+        email = request.form.get("email")
+        text = request.form.get("text")
+        msg = Message(nickname, sender='pythoncloudjakub@gmail.com', recipients=[email])
+        msg.body = text
+        mail.send(msg)
+        return render_template('contact.html')
+    except:
+        print(sys.exc_info()[0])
 
 
 if __name__ == '__main__':
