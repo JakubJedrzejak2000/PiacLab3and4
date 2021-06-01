@@ -1,8 +1,17 @@
 from flask import Flask, render_template, url_for, abort, make_response, request
 import smtplib
 import keyring
+from flask_mail import Mail, Message
 
 app = Flask(__name__)
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'pythoncloudjakub@gmail.com'
+app.config['MAIL_PASSWORD'] = keyring.get_password("test", "pythoncloudjakub@gmail.com")
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 
 @app.route('/')
@@ -37,17 +46,14 @@ def not_found_error(error):
     return render_template('404.html'), 404
 
 
-@app.route('/contact', methods=['GET', 'POST'])
+@app.route('/contact', methods=['POST'])
 def form():
     nickname = request.form.get("nickname")
     email = request.form.get("email")
-    text = "From:<pythoncloudjakub@gmail.com>\nTo:<" + str(email) + ">\nSubject:Wiadomosc\nWitaj " + str(
-        nickname) + "~!\nTwoja wlasna wiadomosc!\n" + request.form.get("text")
-    print(text)
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
-    server.login("pythoncloudjakub@gmail.com", keyring.get_password("test", "pythoncloudjakub@gmail.com"))
-    server.sendmail("pythoncloudjakub@gmail.com", email, text)
+    text = request.form.get("text")
+    msg = Message(nickname, sender='pythoncloudjakub@gmail.com', recipients=[email])
+    msg.body = text
+    mail.send(msg)
     return render_template('contact.html')
 
 
