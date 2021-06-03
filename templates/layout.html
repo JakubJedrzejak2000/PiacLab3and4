@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PIAC AZURE SQL DATABASE TEST</title>
+</head>
+<body>
+{% include "include/menu.html" %}
+{% block body %}
+{% endblock %}
+
+
+<div class="col-md-5 p-lg-5 mx-auto my-5" style="text-align: center; margin-bottom: 0!important; margin-top: 0!important;">
+      <h1 class="display-4 fw-normal">Witam w księdze gości!</h1>
+      <p class="lead fw-normal" style="margin-bottom: 45px!important;">Każdy zainteresowany może zostawić tu ślad po sobie! Zapraszam!</p>
+    <form  method="post" action="guests" id="form" >
+          <div class="row mb-3">
+            <label for="inputNick3" class="col-sm-2 col-form-label">Nickname</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputNick3" name="nickname">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="inputMail3" class="col-sm-2 col-form-label">Treść</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputContent3" name="content">
+            </div>
+          </div>
+            <div class="row mb-3">
+            <label for="inputText3" class="col-sm-2 col-form-label">Data</label>
+            <div class="col-sm-10">
+              <input type="date" class="form-control" id="inputDate3" name="date">
+            </div>
+          </div>
+                <button type="submit" class="btn btn-outline-secondary">Wyślij</button>
+        </form>
+</div>
+
+
+<h1>Lista komentarzy:</h1>
+<br>
+{% block content %}
+{% endblock %}
+
+
+</body>
+</html>

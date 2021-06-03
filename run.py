@@ -3,7 +3,7 @@ import sys
 from flask import Flask, render_template, url_for, abort, make_response, request
 import keyring
 from flask_mail import Mail, Message
-
+from AzureDB import AzureDB
 app = Flask(__name__)
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -59,6 +59,21 @@ def form():
         return render_template('contact.html')
     except:
         print(sys.exc_info()[0])
+
+
+@app.route('/guests')
+def guests():
+    with AzureDB() as a:
+        data = a.azureGetData()
+    return render_template("guests.html", data=data)
+
+
+@app.route('/guests', methods=['POST'])
+def guestsform():
+    with AzureDB() as a:
+        a.azureAddData(request.form.get("nickname"), request.form.get("content"))
+        data = a.azureGetData()
+    return render_template("guests.html", data=data)
 
 
 if __name__ == '__main__':
