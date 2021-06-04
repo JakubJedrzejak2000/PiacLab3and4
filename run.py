@@ -1,9 +1,10 @@
 import sys
 
-from flask import Flask, render_template, url_for, abort, make_response, request
+from flask import Flask, render_template, url_for, abort, make_response, request, redirect
 import keyring
 from flask_mail import Mail, Message
 from AzureDB import AzureDB
+
 app = Flask(__name__)
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -56,24 +57,37 @@ def form():
         msg = Message(nickname, sender='pythoncloudjakub@gmail.com', recipients=[email])
         msg.body = text
         mail.send(msg)
-        return render_template('contact.html')
+        return redirect('contact')
     except:
         print(sys.exc_info()[0])
 
 
 @app.route('/guests')
 def guests():
-    with AzureDB() as a:
-        data = a.azureGetData()
-    return render_template("guests.html", data=data)
+    return render_template("layout.html")
 
 
 @app.route('/guests', methods=['POST'])
 def guestsform():
     with AzureDB() as a:
-        a.azureAddData(request.form.get("nickname"), request.form.get("content"))
+        a.azureAddData(request.form.get("nickname"), request.form.get("content"), request.form.get("date"))
+        data = a.azureGetData()
+    return redirect('guestbook')
+
+
+@app.route('/guestbook')
+def guestbook():
+    with AzureDB() as a:
         data = a.azureGetData()
     return render_template("guests.html", data=data)
+
+
+@app.route('/guestbook', methods=['POST'])
+def delguest():
+    with AzureDB() as a:
+        data = a.azureGetData()
+        a.azureDeleteData(request.form.get("name"), request.form.get("text"))
+    return redirect('guestbook')
 
 
 if __name__ == '__main__':

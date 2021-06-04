@@ -1,9 +1,9 @@
-{% extends "layout.html"%}
+{% extends "guestbook.html" %}
 
-{%block content %}
-{% for result in data %}
-<p>{{result.name}} napisał {{result.text}}</p>
-{% else %}
-<p>Brak wspisów</p>
-{% endfor %}
+{% block content %}
+    {% for result in data %}
+        <p class="lead fw-normal" style="margin-top: 30px !important;">{{ result.name }} napisał {{ result.text }} | {{ result.date }}</p>
+    {% else %}
+        <p>Brak wspisów</p>
+    {% endfor %}
 {% endblock %}

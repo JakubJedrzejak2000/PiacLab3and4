@@ -21,7 +21,7 @@ class AzureDB:
 
     def azureGetData(self):
         try:
-            self.cursor.execute("SELECT name, text from data")
+            self.cursor.execute("SELECT * from data")
             data = self.cursor.fetchall()
             return data
         except pypyodbc.DatabaseError as exception:
@@ -29,10 +29,11 @@ class AzureDB:
             print(exception)
             exit(1)
 
-    def azureAddData(self, name, text):
-        self.cursor.execute("INSERT into data (name, text) values ('"+name+"', '"+text+"')")
+    def azureAddData(self, name, text, data):
+        self.cursor.execute(
+            "INSERT into data (name, text, date) values ('" + name + "', '" + text + "', '" + data + "')")
         self.conn.commit()
 
-    def azureDeleteData(self):
-        self.cursor.execute("DELETE FROM data WHERE name='Adam'")
+    def azureDeleteData(self, name, text):
+        self.cursor.execute("DELETE FROM data WHERE name='" + name + "' AND text='"+text+"'")
         self.conn.commit()
