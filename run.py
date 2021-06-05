@@ -71,7 +71,6 @@ def guests():
 def guestsform():
     with AzureDB() as a:
         a.azureAddData(request.form.get("nickname"), request.form.get("content"), request.form.get("date"))
-        data = a.azureGetData()
     return redirect('guestbook')
 
 
@@ -82,12 +81,29 @@ def guestbook():
     return render_template("guests.html", data=data)
 
 
-@app.route('/guestbook', methods=['POST'])
-def delguest():
+@app.route('/delguest/<id>', methods=['get'])
+def delete(id):
     with AzureDB() as a:
-        data = a.azureGetData()
-        a.azureDeleteData(request.form.get("name"), request.form.get("text"))
-    return redirect('guestbook')
+        a.azureDeleteData(id)
+    return redirect('/guestbook')
+
+
+@app.route('/edycja/<id>', methods=['get'])
+def edycja(id):
+    with AzureDB() as a:
+        data = a.azureGetParticularDate(id)
+    return render_template('edit.html', data=data)
+
+
+@app.route('/edytowanie', methods=['post'])
+def edit():
+    name = request.form.get("nickname")
+    text = request.form.get("text")
+    date = request.form.get("date")
+    id = request.form.get("id")
+    with AzureDB() as a:
+        a.azureUpdateData(id, name, text, date)
+    return redirect('/guestbook')
 
 
 if __name__ == '__main__':

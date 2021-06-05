@@ -2,7 +2,34 @@
 
 {% block content %}
     {% for result in data %}
-        <p class="lead fw-normal" style="margin-top: 30px !important;">{{ result.name }} napisał {{ result.text }} | {{ result.date }}</p>
+        {#                <p class="lead fw-normal" style="margin-top: 30px !important;" id="name">{{ result.name }}#}
+        {#            napisał {{ result.text }}#}
+        {#                    | {{ result.date }} <a class="btn btn-outline-secondary" href="/delguest/{{ result.id }}"#}
+        {#                                           methods="get">Usuń</a>#}
+        {#                    <a class="btn btn-outline-secondary" href="/edycja/{{ result.id }}"#}
+        {#                       methods="get">Edytuj</a>#}
+        {#        </p>#}
+
+        <style> td {
+            border: 1px solid black;
+            height: auto;
+            margin-right: auto;
+            margin-left: auto;
+        }</style>
+
+            <tr>
+                <td style="min-width: 100px">{{ result.name }}</td>
+                <td style="min-width: 250px; max-width: 250px;">{{ result.text }}</td>
+                <td style="min-width: 100px">{{ result.date }}</td>
+                <td><a class="btn btn-outline-secondary" href="/delguest/{{ result.id }}"
+                       methods="get">Usuń</a></td>
+                <td><a class="btn btn-outline-secondary" href="/edycja/{{ result.id }}"
+                       methods="get">Edytuj</a></td>
+            </tr>
+
+
+
+
     {% else %}
         <p>Brak wspisów</p>
     {% endfor %}
