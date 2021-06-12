@@ -1,7 +1,6 @@
 import sys
 
 from flask import Flask, render_template, url_for, abort, make_response, request, redirect
-import keyring
 from flask_mail import Mail, Message
 from AzureDB import AzureDB
 
