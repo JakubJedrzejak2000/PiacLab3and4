@@ -61,19 +61,18 @@ def form():
         print(sys.exc_info()[0])
 
 
-@app.route('/guests')
+@app.route('/guestbook')
 def guests():
     return render_template("layout.html")
 
 
-@app.route('/guests', methods=['POST'])
+@app.route('/guestbook', methods=['POST'])
 def guestsform():
     with AzureDB() as a:
         a.azureAddData(request.form.get("nickname"), request.form.get("content"), request.form.get("date"))
     return redirect('guestbook')
 
-
-@app.route('/guestbook')
+@app.route('/guests')
 def guestbook():
     with AzureDB() as a:
         data = a.azureGetData()
@@ -84,7 +83,7 @@ def guestbook():
 def delete(id):
     with AzureDB() as a:
         a.azureDeleteData(id)
-    return redirect('/guestbook')
+    return redirect('/guests')
 
 
 @app.route('/edycja/<id>', methods=['get'])
@@ -102,7 +101,7 @@ def edit():
     id = request.form.get("id")
     with AzureDB() as a:
         a.azureUpdateData(id, name, text, date)
-    return redirect('/guestbook')
+    return redirect('/guests')
 
 
 if __name__ == '__main__':
