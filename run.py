@@ -1,8 +1,13 @@
+import os
 import sys
 
-from flask import Flask, render_template, url_for, abort, make_response, request, redirect
+from flask import Flask, render_template, url_for, abort, make_response, request, redirect, session
 from flask_mail import Mail, Message
 from AzureDB import AzureDB
+from flask_dance.contrib.github import make_github_blueprint, github
+import secrets
+from flask_dance.contrib.google import make_google_blueprint, google
+from flask_login import logout_user, LoginManager, login_user
 
 app = Flask(__name__)
 
@@ -13,6 +18,22 @@ app.config['MAIL_PASSWORD'] = 'nwwyjeatddpyobbs'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
+
+app.secret_key = secrets.token_hex(16)
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
+
+google_blueprint = make_google_blueprint(
+    client_id="260667272711-bsngqdtnmr7coe9tl7tcd86bkt6sah5j.apps.googleusercontent.com",
+    client_secret="DAxRqSE0KKl5BNSo6T8AJ_PE"
+)
+
+github_blueprint = make_github_blueprint(
+    client_id="036ec94f9eeed8ddd604",
+    client_secret="cfc95a239f7a5961587739b896d2e0b01b80cda1"
+)
+app.register_blueprint(google_blueprint, url_prefix='/login')
+app.register_blueprint(github_blueprint, url_prefix='/login')
 
 
 @app.route('/')
@@ -63,7 +84,7 @@ def form():
 
 @app.route('/guestbook')
 def guests():
-    return render_template("layout.html")
+    return render_template("layout.html", )
 
 
 @app.route('/guestbook', methods=['POST'])
@@ -72,11 +93,16 @@ def guestsform():
         a.azureAddData(request.form.get("nickname"), request.form.get("content"), request.form.get("date"))
     return redirect('guestbook')
 
+
 @app.route('/guests')
 def guestbook():
+    if github.authorized or google.authorized:
+        login = True
+    else:
+        login = False
     with AzureDB() as a:
         data = a.azureGetData()
-    return render_template("guests.html", data=data)
+    return render_template("guests.html", data=data, login=login)
 
 
 @app.route('/delguest/<id>', methods=['get'])
@@ -104,5 +130,33 @@ def edit():
     return redirect('/guests')
 
 
+@app.route('/logingithub')
+def github_login():
+    if not github.authorized:
+        return redirect(url_for('github.login'))
+    else:
+        account_info = github.get('/user')
+        if account_info.ok:
+            account_info_json = account_info.json()
+            return redirect(url_for('home'))
+        return "<h1>Błąd!</h1>"
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
+
+
+@app.route('/logingoogle')
+def google_login():
+    if not google.authorized:
+        return redirect(url_for("google.login"))
+    resp = google.get("/plus/v1/people/me")
+    assert resp.ok, resp.text
+    return redirect(url_for("home"))
+
+
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run(debug=True)
+

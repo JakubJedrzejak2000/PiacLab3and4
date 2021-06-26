@@ -10,15 +10,17 @@
             margin-left: auto;
         }</style>
 
-            <tr>
-                <td style="min-width: 100px">{{ result.name }}</td>
-                <td style="min-width: 250px; max-width: 250px;">{{ result.text }}</td>
-                <td style="min-width: 100px">{{ result.date }}</td>
+        <tr>
+            <td style="min-width: 100px">{{ result.name }}</td>
+            <td style="min-width: 250px; max-width: 250px;">{{ result.text }}</td>
+            <td style="min-width: 100px">{{ result.date }}</td>
+            {% if login %}
                 <td><a class="btn btn-outline-secondary" href="/delguest/{{ result.id }}"
                        methods="get">Usuń</a></td>
                 <td><a class="btn btn-outline-secondary" href="/edycja/{{ result.id }}"
                        methods="get">Edytuj</a></td>
-            </tr>
+            {% endif %}
+        </tr>
 
 
 
